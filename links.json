@@ -1,0 +1,16 @@
+{
+  "site": {
+    "title": "Nucleate UniCA",
+    "subtitle": "Registration links",
+    "base": "/nucleate-unica-fr"
+  },
+  "links": [
+    {
+      "slug": "career chat",
+      "title": "When AI Meets Biology: The Next Wave of Biotech Startups",
+      "description": "When AI Meets Biology: The Next Wave of Biotech Startups \uD83E\uDD16\uD83E\uDDEC\nHow is artificial intelligence transforming biological research, and what opportunities does it create for the next generation of biotech startups?\nJoin us for an engaging discussion with two entrepreneurs and researchers working at the intersection of AI, robotics, and biology:\n\uD83D\uDD39 Enrico Fiasché – Robotics PhD from Inria and Université Côte d’Azur and co-founder of Festlik, an Inria Startup Studio project developing AI for early detection of crop stress and disease.\n\uD83D\uDD39 Emmanuel Bouilhol – Computer Science PhD specializing in AI for microscopy image analysis and developer of Phaeros, an AI-powered assistant for biological image analysis at Inria Startup Studio.\nDiscover how cutting-edge AI research can be translated into innovative biotech solutions and real-world applications!",
+      "url": "https://docs.google.com/forms/d/e/1FAIpQLScVWRoz0PyuQVSRsxoFgerE-FJQFyY4OZGA3fSvHZig1ZM5Ig/viewform",
+      "deadline": "2026-12-3T23:59:00+01:00"
+    }
+  ]
+}
