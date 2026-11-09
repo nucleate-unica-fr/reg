@@ -42,19 +42,32 @@
 </main>
 <script>
 (async function () {
+  // Trusted "now": server time from the HTTP Date header (+ Age if served from cache),
+  // so a wrong or tampered device clock cannot open or close a registration.
+  function serverNow(res) {
+    const d = Date.parse(res.headers.get('Date'));
+    if (isNaN(d)) return new Date();            // fallback: device clock
+    const age = parseInt(res.headers.get('Age') || '0', 10) || 0;
+    return new Date(d + age * 1000);
+  }
   const list = document.getElementById('list');
   try {
-    const res = await fetch('links.json', { cache: 'no-store' });
+    const res = await fetch('links.json?v=' + Date.now(), { cache: 'no-store' });
     const data = await res.json();
     const site = data.site || {};
     document.getElementById('title').textContent = site.title || 'Registration';
     document.getElementById('subtitle').textContent = site.subtitle || '';
     document.title = site.title || document.title;
     const base = site.base || '';
-    const now = new Date();
+    const now = serverNow(res);
     const fmt = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long', timeStyle: 'short', timeZone: 'Europe/Paris' });
 
-    const items = (data.links || []).map(l => ({ ...l, open: now <= new Date(l.deadline) }));
+    const isOpen = (n, dl) => {
+      const t = Date.parse(dl);
+      if (isNaN(t)) { console.warn('Invalid deadline for', dl); return true; }
+      return n.getTime() <= t;
+    };
+    const items = (data.links || []).map(l => ({ ...l, open: isOpen(now, l.deadline) }));
     // Open first (soonest deadline first), then closed
     items.sort((a, b) => (b.open - a.open) || (new Date(a.deadline) - new Date(b.deadline)));
 

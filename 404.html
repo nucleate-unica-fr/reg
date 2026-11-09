@@ -23,13 +23,21 @@
 </div>
 <script>
 (async function () {
+  // Trusted "now": server time from the HTTP Date header (+ Age if served from cache),
+  // so a wrong or tampered device clock cannot open or close a registration.
+  function serverNow(res) {
+    const d = Date.parse(res.headers.get('Date'));
+    if (isNaN(d)) return new Date();            // fallback: device clock
+    const age = parseInt(res.headers.get('Age') || '0', 10) || 0;
+    return new Date(d + age * 1000);
+  }
   const h = document.getElementById('h'), p = document.getElementById('p'), home = document.getElementById('home');
   try {
     // 404.html is served from any depth, so locate links.json via the base path
     // (first path segment on a github.io project site; adjust "base" in links.json otherwise).
     const guessBase = location.hostname.endsWith('github.io') ? '/' + location.pathname.split('/')[1] : '';
-    let res = await fetch(guessBase + '/links.json', { cache: 'no-store' });
-    if (!res.ok) res = await fetch('/links.json', { cache: 'no-store' });
+    let res = await fetch(guessBase + '/links.json?v=' + Date.now(), { cache: 'no-store' });
+    if (!res.ok) res = await fetch('/links.json?v=' + Date.now(), { cache: 'no-store' });
     const data = await res.json();
     const base = (data.site && data.site.base) || '';
     home.href = base + '/';
@@ -41,7 +49,7 @@
     const link = (data.links || []).find(l => l.slug.toLowerCase() === slug);
     if (!link) { h.textContent = 'Link not found'; p.textContent = 'This registration link does not exist.'; return; }
 
-    if (new Date() > new Date(link.deadline)) {
+    if (serverNow(res) > new Date(link.deadline)) {
       h.textContent = 'Registration closed';
       p.textContent = '“' + link.title + '” closed on ' +
         new Intl.DateTimeFormat('en-GB', { dateStyle: 'long', timeStyle: 'short', timeZone: 'Europe/Paris' }).format(new Date(link.deadline)) + '.';
