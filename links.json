@@ -2,7 +2,8 @@
   "site": {
     "title": "Nucleate UniCA",
     "subtitle": "Registration links",
-    "base": "/reg"
+    "base": "/reg",
+    "url": "https://nucleate-unica-fr.github.io/reg"
   },
   "links": [
     {
